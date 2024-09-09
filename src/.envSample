@@ -1,0 +1,4 @@
+PORT=your port
+MongoDB_URI= your database connection URI
+MONGO_DB_NAME= your database name
+SECRET_TOKEN=your secret token
