@@ -18,16 +18,16 @@ app.use(express.urlencoded({ extended: true, limit: "20kb" }));
 app.use(cookieParser()); //perform CRUD OPER ON USER WEB COOKIES
 
 // // importing routes
-// import userRouter from "./routes/user.routes.js";
+import userRouter from "./routes/user.routes.js";
+import { errorHandler } from "./middleware/verify.middleware.js";
 // import stockRouter from "./routes/stock.routes.js";
 // import commentRouter from "./routes/comment.routes.js";
 // import likeRouter from "./routes/like.routes.js";
 
-// // Mounting the userRouter middleware at the "/api/v1/users" endpoint
 
-// app.use("/api/auth", authRouter);
+app.use("/api/auth", userRouter);
 
-// app.use("/api/user", userRouter); 
+app.use("/api/user", userRouter); 
 
 // app.use("/api/post", videoRouter);
 
@@ -35,13 +35,13 @@ app.use(cookieParser()); //perform CRUD OPER ON USER WEB COOKIES
 
 // app.use("/api/likes", likeRouter);
 
+app.use("/api", errorHandler)
 // default route for undefined routes
 app.all("*", (req, res, next) => {
   res.status(404).json({
-    status: "fail",
+    success: false,
     message: `Route ${req.originalUrl} not found.`,
   });
 });
 
-// http://localhost/api/v1/users/*
 export { app };
