@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({
+
+export const uploadAvatar = multer({
   storage: storage
-});
+}).single('avatar');
