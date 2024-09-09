@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const userSchema = new Schema(
   {
-    username: { type: String, required: [true,"username is required"], trim: true },
+    username: { type: String, required: [true,"username is required"], trim: true, toLowerCase: true },
     email: { type: String, required: [true,"Email is required"], trim: true, unique: true },
     password: { type: String, required: [true,"Password is required"], minlength: 8 },
     bio: { type: String, default: "User" },
