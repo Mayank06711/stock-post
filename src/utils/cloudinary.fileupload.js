@@ -21,13 +21,15 @@ const uploadOnCloudinary = async (localFilePath) => {
       public_id: uuid(),
     });
 
+    console.log(response);
     // delete file from local storage
     fs.unlinkSync(localFilePath);
     console.log(`file is being uploaded on cloudinary from line number 24`);
-    return (res = {
+    const res = {
       url: response.secure_url,
       public_Id: response.public_id,
-    });
+    };
+    return res;
   } catch (error) {
     console.log(
       "upload error I`m from cloudinaryfileUpload  : also see where i have been used ",
@@ -39,31 +41,21 @@ const uploadOnCloudinary = async (localFilePath) => {
     fs.unlinkSync(localFilePath);
     return null;
   }
-}; //Upload filesingle file on cloudinary
+};
 
 const deleteImageFromCloudinary = async (oldFilePublic_Id) => {
-  // will be usd when deleting an yser its avtar needs to be deleted from serveer
   try {
     if (!oldFilePublic_Id) {
-      console.log(
-        "deletion failed from deleteImageFromCloudinary not found path: oldPath: " +
-          oldFilePublic_Id
-      );
+      console.log("Avatar deletion failed", oldFilePublic_Id);
       return null;
     }
-    // getting path from oldfilepublicid
+    console.log("Avatar deletion succeeded", oldFilePublic_Id)
     const public_id = oldFilePublic_Id.split("/").pop().split(".")[0];
-    console.log("From deleteImageFromCloudinary public_id", public_id);
     const res = await cloudinary.uploader.destroy(public_id, {
       invalidate: true,
-      resource_type: "raw",
+      resource_type: "image",
     });
-    console.log(
-      "File deleted on cloudinary",
-      oldFilePublic_Id,
-      "public_id",
-      public_id
-    );
+    console.log("File deleted on cloudinary", res);
     return res;
   } catch (error) {
     console.log(

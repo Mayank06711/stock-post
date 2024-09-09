@@ -6,7 +6,6 @@ import {
 } from "../utils/cloudinary.fileupload.js";
 import { User } from "../model/user.model.js";
 import Jwt from "jsonwebtoken";
-import { isValidObjectId } from "mongoose";
 
 const createAccessAndRefreshToken = async (userId) => {
   try {
@@ -29,7 +28,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if ([email, username, password].some((fields) => fields?.trim() === "")) {
     throw new ApiError(400, "All fields are required except bio");
   }
-
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
@@ -38,21 +36,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const avatarLocalPath = req?.file?.path; // from multer we get this access i.e files and avatar[0] from multer will conatin path
 
-  console.log(
-    avatarLocalPath,
-    "and  l l l l cover ---->",
-    "file \n",
-    req.file,
-    "avatarLocalPath see me in USERCONTROLLER \n"
-  );
-
   if (!avatarLocalPath) {
     throw new ApiError(400, "user avatar is required");
   }
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-  console.log(avatar, "avatar");
   if (!avatar) {
     throw new ApiError(400, "avatar file is required");
   }
@@ -86,6 +75,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
   if (!email) {
     throw new ApiError(400, "email is reqiuired to login");
   }
@@ -133,10 +123,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 const getUserProfile =  asyncHandler(async (req, res)=>{
-    if(!req.user._id.isValidObjectId()){
-        throw new ApiError(401, "Invalid user Id detected");
-    }
-    const user = await User.findById(req.user._id);
+   const {userId} = req.params;
+    const user = await User.findById({_id:userId});
     if(!user){
         throw new ApiError(401, "User not found");
     }
@@ -153,20 +141,21 @@ const updateUserProfile = asyncHandler(async (req, res)=>{
     if(!username){
       throw new ApiError(404, "Please enter a username to update")
     }
-    if(!req.user._id.isValidObjectId()){
-        throw new ApiError(401, "Invalid user Id detected");
-    }
     const user = await User.findById({_id:req.user._id});
     if(!user){
         throw new ApiError(404, "User not found");
     }
     const avatar = req?.file.path;
     if(avatar){
-     const val =  await deleteImageFromCloudinary(user.avatar.public_Id)
-     if(val){
-       throw new ApiError(500, "Something went wrong while updatig profile")
-     }
+      const deleteResult = await deleteImageFromCloudinary(user.avatar.url);
+      
+      if (!deleteResult || deleteResult.result !== "ok" ) {
+        throw new ApiError(500, "Something went wrong while deleting old avatar");
+      }  
      const data = await uploadOnCloudinary(avatar);
+     if (!data) {
+      throw new ApiError(500, "Something went wrong while uploading new avatar");
+    }
      user.avatar = {url:data.url, public_Id:data.public_Id}
      await user.save();
     }

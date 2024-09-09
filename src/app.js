@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
-
+import { swaggerUi, specs } from './swagger.js';
 app.use(
   cors({
     origin: process.env.COR_ORIGIN,
@@ -34,6 +34,8 @@ app.use("/api/user", userRouter);
 // app.use("/api/post", commentRouter);
 
 // app.use("/api/likes", likeRouter);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use("/api", errorHandler)
 // default route for undefined routes
