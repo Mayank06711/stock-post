@@ -29,7 +29,6 @@ Use the .envSample file to enter the required environment variables in your .env
 ```bash
 npm run dev # for starting in development
 npm start   # for starting in production
-npm test    # for testing
 ```
 
 
