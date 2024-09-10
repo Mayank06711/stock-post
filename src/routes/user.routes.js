@@ -1,7 +1,13 @@
 import { Router } from "express";
-import {registerUser, loginUser, getUserProfile ,updateUserProfile, refreshAccessTooken} from "../controller/user.controller.js"
-import {uploadAvatar} from "../middleware/multer.middleware.js"
-import {verifyJWT} from "../middleware/verify.middleware.js"
+import {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+  refreshAccessTooken,
+} from "../controller/user.controller.js";
+import { uploadAvatar } from "../middleware/multer.middleware.js";
+import { verifyJWT } from "../middleware/verify.middleware.js";
 
 const router = new Router();
 
@@ -53,7 +59,7 @@ const router = new Router();
  *         description: Conflict, user already exists
  */
 
-router.route("/register").post(uploadAvatar.single('avatar'), registerUser);
+router.route("/register").post(uploadAvatar.single("avatar"), registerUser);
 
 /**
  * @swagger
@@ -141,7 +147,7 @@ router.route("/login").post(loginUser);
  *         description: User not found
  */
 
-router.route("/profile/:userId").get( verifyJWT, getUserProfile);
+router.route("/profile/:userId").get(verifyJWT, getUserProfile);
 
 /**
  * @swagger
@@ -182,7 +188,9 @@ router.route("/profile/:userId").get( verifyJWT, getUserProfile);
  *         description: Internal server error, failed to update profile
  */
 
-router.route("/profile").put(verifyJWT, uploadAvatar.single('avatar'), updateUserProfile);
+router
+  .route("/profile")
+  .put(verifyJWT, uploadAvatar.single("avatar"), updateUserProfile);
 
 /**
  * @swagger
@@ -209,5 +217,3 @@ router.route("/profile").put(verifyJWT, uploadAvatar.single('avatar'), updateUse
 router.route("/token").get(refreshAccessTooken);
 
 export default router;
-
-
