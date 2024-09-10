@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { app } from "./app.js";
+import { app, server } from "./app.js";
 import connectDB from "./db/index.js";
 
 dotenv.config({
@@ -13,7 +13,7 @@ connectDB()
       console.error(err + "im from index.js");
       throw err;
     });
-    app.listen(process.env.PORT || 7056, () => {
+    server.listen(process.env.PORT || 7056, () => {
       console.log(`Server is running on port ${process.env.PORT}`);
     });
   })
