@@ -187,7 +187,7 @@ router.route("/profile").put(verifyJWT, uploadAvatar.single('avatar'), updateUse
 /**
  * @swagger
  * /auth/token:
- *   post:
+ *   get:
  *     summary: Refresh access token
  *     description: Refreshes the access token using a valid refresh token.
  *     responses:
@@ -206,7 +206,7 @@ router.route("/profile").put(verifyJWT, uploadAvatar.single('avatar'), updateUse
  *         description: Unauthorized, invalid refresh token
  */
 
-router.route("token").get(refreshAccessTooken);
+router.route("/token").get(refreshAccessTooken);
 
 export default router;
 

@@ -18,6 +18,10 @@ const stockSchema = new Schema({
         type: [String],
         default: "Stock"
     },
+    likesCount: {
+        type: Number,
+        default: 0 // Track number of likes for sorting purposes
+    },
     owner:{
         type: Schema.Types.ObjectId,
         ref: 'User',
