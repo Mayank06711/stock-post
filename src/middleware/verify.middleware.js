@@ -37,12 +37,7 @@ export const errorHandler = (err, req, res, next) => {
     err.message = `Duplicate key ${error}`;
     err.statusCode = err.statusCode;
   }
-  const errorMess = new ApiError(
-    err.statusCode,
-    err.message,
-    err,
-    err.stack
-  );
+  const errorMess = new ApiError(err.statusCode, err.message, err, err.stack);
   console.log("\n", errorMess, "\n dh", err.message);
   res.status(err.statusCode).json({
     success: false,

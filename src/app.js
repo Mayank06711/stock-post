@@ -14,6 +14,7 @@ const io = new Server(server, {
   },
 });
 initSocket(io);
+
 import { swaggerUi, specs } from "./swagger.js";
 app.use(
   cors({
@@ -53,8 +54,8 @@ app.use("/api", errorHandler);
 app.all("*", (req, res, next) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.originalUrl} not found.`,
+    message: `Requested route ${req.originalUrl} not found`,
   });
 });
 
-export { server,app };
+export { server, app };

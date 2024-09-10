@@ -4,7 +4,10 @@ import { ApiError } from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { emitLikeUpdate } from "../socket/socketManager.js";
 const likeStockPost = asyncHandler(async (req, res, next) => {
-  const stock = await Stock.findById(req.params.postId).populate("owner", "username");
+  const stock = await Stock.findById(req.params.postId).populate(
+    "owner",
+    "username"
+  );
 
   if (!stock) {
     throw new ApiError(404, "Stock post not found");
@@ -33,8 +36,8 @@ const likeStockPost = asyncHandler(async (req, res, next) => {
     postId: stock._id,
     likeCount: stock.likesCount,
     username: stock.owner.username,
-    action: 'LIKE'
-  })
+    action: "LIKE",
+  });
   res.status(201).json({ success: true, message: "Post liked" });
 });
 

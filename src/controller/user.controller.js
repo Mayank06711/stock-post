@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const avatar = await uploadOnCloudinary(avatarLocalPath);
 
   if (!avatar) {
-    throw new ApiError(400, "avatar file is required");
+    throw new ApiError(500, "Something went wrong uploading avatar");
   }
 
   const user = await User.create({
@@ -72,7 +72,6 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 });
 
-
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
@@ -88,7 +87,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
     throw new ApiError(
-      404,
+      400,
       "Password does not match with your old password : Try again"
     );
   }
@@ -121,53 +120,54 @@ const loginUser = asyncHandler(async (req, res) => {
     });
 });
 
+const getUserProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById({ _id: userId });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  return res.status(200).json({
+    id: user._id,
+    username: user.username,
+    bio: user.bio,
+    avatar: user.avatar,
+  });
+});
 
-const getUserProfile =  asyncHandler(async (req, res)=>{
-   const {userId} = req.params;
-    const user = await User.findById({_id:userId});
-    if(!user){
-        throw new ApiError(401, "User not found");
-    }
-    return res.status(200).json({
-        id: user._id,
-        username: user.username,
-        bio: user.bio,
-        avatar:user.avatar
-    })
-})
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const { username, bio } = req.body;
+  if (!username) {
+    throw new ApiError(400, "Please enter a username to update");
+  }
+  const user = await User.findById({ _id: req.user._id });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  const avatar = req?.file.path;
+  if (avatar) {
+    const deleteResult = await deleteImageFromCloudinary(user.avatar.url);
 
-const updateUserProfile = asyncHandler(async (req, res)=>{
-    const {username, bio} = req.body;
-    if(!username){
-      throw new ApiError(404, "Please enter a username to update")
+    if (!deleteResult || deleteResult.result !== "ok") {
+      throw new ApiError(500, "Something went wrong while deleting old avatar");
     }
-    const user = await User.findById({_id:req.user._id});
-    if(!user){
-        throw new ApiError(404, "User not found");
+    const data = await uploadOnCloudinary(avatar);
+    if (!data) {
+      throw new ApiError(
+        500,
+        "Something went wrong while uploading new avatar"
+      );
     }
-    const avatar = req?.file.path;
-    if(avatar){
-      const deleteResult = await deleteImageFromCloudinary(user.avatar.url);
-      
-      if (!deleteResult || deleteResult.result !== "ok" ) {
-        throw new ApiError(500, "Something went wrong while deleting old avatar");
-      }  
-     const data = await uploadOnCloudinary(avatar);
-     if (!data) {
-      throw new ApiError(500, "Something went wrong while uploading new avatar");
-    }
-     user.avatar = {url:data.url, public_Id:data.public_Id}
-     await user.save();
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Profile updated "
-    })
-})
-
+    user.avatar = { url: data.url, public_Id: data.public_Id };
+    await user.save();
+  }
+  return res.status(200).json({
+    success: true,
+    message: "Profile updated ",
+  });
+});
 
 const refreshAccessTooken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies?.refreshToken 
+  const incomingRefreshToken = req.cookies?.refreshToken;
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unathorized Access");
@@ -212,4 +212,10 @@ const refreshAccessTooken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, refreshAccessTooken, getUserProfile, updateUserProfile };
+export {
+  registerUser,
+  loginUser,
+  refreshAccessTooken,
+  getUserProfile,
+  updateUserProfile,
+};

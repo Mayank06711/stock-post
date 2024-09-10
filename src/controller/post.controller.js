@@ -5,7 +5,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 // Create a new stock post
 const createStockPost = asyncHandler(async (req, res, next) => {
   const { stockSymbol, title, description, tags } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   if (!stockSymbol || !title || !description) {
     throw new ApiError(
       400,
@@ -22,13 +22,11 @@ const createStockPost = asyncHandler(async (req, res, next) => {
   });
   console.log(stock);
   await stock.save();
-  res
-    .status(201)
-    .json({
-      success: true,
-      postId: stock._id,
-      message: "Post created successfully",
-    });
+  res.status(201).json({
+    success: true,
+    postId: stock._id,
+    message: "Post created successfully",
+  });
 });
 
 // Get all stock posts with pagination, filtering, and sorting
@@ -53,8 +51,8 @@ const getAllStockPosts = asyncHandler(async (req, res, next) => {
     .limit(parseInt(limit))
     .populate("owner", "username email")
     .exec();
-  
-   if (!stocks) {
+
+  if (!stocks) {
     throw new ApiError(404, "No stock posts found");
   }
   res.status(200).json({
@@ -103,7 +101,7 @@ const deleteStockPost = asyncHandler(async (req, res, next) => {
 
   // Ensure the user deleting the stock post is the owner
   if (stock.owner.toString() !== req.user._id) {
-    throw  new ApiError(403, "You are not authorized to delete this post")
+    throw new ApiError(403, "You are not authorized to delete this post");
   }
 
   await stock.remove();
