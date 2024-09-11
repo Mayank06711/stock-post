@@ -65,3 +65,17 @@ Simply copy and paste the link into your browser to get started!
 http://localhost:7056/api-docs/
 ```
 
+## Checking Real Time Notifications
+
+Open the swager api-docs and notification page on two different tabs.
+
+Now login on each tabs to perform any action like comment or liking a post.
+
+Now create a post on any of the tabs and copy postId and comment/like on this post using Id you just copied. 
+
+Now you can see real time notification on tab from where you created the post.
+
+### URL to open Notification.
+```bash
+http://localhost:7056/notifications
+```
