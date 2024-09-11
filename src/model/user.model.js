@@ -14,22 +14,20 @@ const userSchema = new Schema(
       required: [true, "Email is required"],
       trim: true,
       unique: true,
-      validate: {
-        validator: function (v) {
-          // Regular expression for email validation
-          return /^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\]$/.test(
-            v
-          );
+      validate:{
+        validator: async function(value){
+           // Regular expression to match the email format
+           return /\S+@\S+\.\S+/.test(value);
         },
-        message: (props) => `${props.value} is not a valid email format!`,
-      },
+        message: props => `${props.value} is not a valid email address!`
+    }
     },
     password: {
       type: String,
       required: [true, "Password is required"],
       minlength: 8,
       validate: {
-        validator: function (v) {
+        validator: async function (v) {
           // Check if the password contains '@'
           return /[@#$%]/.test(v);
         },
