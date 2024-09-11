@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `stock-post` project is a backend application with a deadline of 11/09/24. This document provides instructions on setting up and initiating the project.
+The `stock-post` project is a backend application. This document provides instructions on setting up and initiating the project.
 
 ## Prerequisites
 
