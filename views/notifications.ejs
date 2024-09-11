@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Real-Time Notifications</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      h1 {
+        color: #333;
+      }
+      #notifications {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow-y: auto; /* Allows scrolling if notifications exceed the container height */
+        height: 70vh; /* Limit height of the notifications container */
+      }
+      .notification {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        color: #fff;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+      .notification.like {
+        background-color: #00796b; /* Green for likes */
+        border-left: 5px solid #004d40;
+      }
+      .notification.comment {
+        background-color: #0288d1; /* Blue for comments */
+        border-left: 5px solid #01579b;
+      }
+      .notification:hover {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Real-Time Notifications</h1>
+    <div id="notifications"></div>
+
+    <script>
+      const socket = io();
+      const userId = "<%= userId %>"; // Pass this userId from the server
+      console.log("Joining room with userId:", userId);
+      socket.emit("joinRoom", userId); // Emit the joinRoom event to the server
+
+      socket.on("likeUpdate", (data) => {
+        const { postId, likeCount, username } = data;
+        console.log(data, "Incoming likeUpdate message");
+
+        const notification = document.createElement("div");
+        notification.classList.add("notification", "like");
+        notification.textContent = `New like: Post ID: ${postId}, New Like Count: ${likeCount}, Username: ${username}`;
+        document.getElementById("notifications").appendChild(notification);
+      });
+
+      socket.on("commentUpdate", (data) => {
+        const { postId, comment } = data;
+        console.log(data, "Incoming commentUpdate message");
+
+        const notification = document.createElement("div");
+        notification.classList.add("notification", "comment");
+        notification.textContent = `New comment on Post ID: ${postId}, Comment: ${comment.content}, By: ${comment.commentedBy} on Date ${comment.createdAt}`;
+        document.getElementById("notifications").appendChild(notification);
+      });
+    </script>
+  </body>
+</html>

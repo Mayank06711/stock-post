@@ -6,7 +6,7 @@ const initSocket = (socketIo) => {
 
   io.on("connection", (socket) => {
     console.log("Client connected:", socket.id);
-
+    
     // This event will be emitted when the user connects, passing userId
     socket.on("joinRoom", (userId) => {
       console.log(`User ${userId} joined room ${userId}`);
@@ -31,8 +31,10 @@ const initSocket = (socketIo) => {
 // Emit like update to the post owner
 const emitLikeUpdate = (postOwnerId, data) => {
   if (io) {
+    const socketID = userSockets[postOwnerId.toString()] 
     // Emit the like update only to the post owner's room
-    io.to(postOwnerId).emit("likeUpdate", data);
+    io.to(socketID).emit("likeUpdate", data);
+    console.log(postOwnerId.toString());
     console.log(
       `Like update emitted to user ${postOwnerId} for post ${data.postId}`
     );
@@ -44,8 +46,11 @@ const emitLikeUpdate = (postOwnerId, data) => {
 // Function to emit comment update to the post owner
 const emitCommentUpdate = (postOwnerId, data) => {
   if (io) {
+    console.log(postOwnerId.toString(),"comment update post owner")
+    const socketID = userSockets[postOwnerId.toString()] 
+    console.log(socketID,"comment update id")
     // Emit the comment update only to the post owner's room
-    io.to(postOwnerId).emit("commentUpdate", data);
+    io.to(socketID).emit("commentUpdate", data);
     console.log(
       `Comment update emitted to user ${postOwnerId} for post ${data.postId}`
     );

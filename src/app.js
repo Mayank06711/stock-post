@@ -22,6 +22,11 @@ app.use(
     credentials: true,
   })
 );
+// Set the view engine to EJS
+app.set('view engine', 'ejs');
+
+// Set the views directory (optional, default is `views`)
+app.set('views', './views');
 
 app.use(express.json({ limit: "20kb" }));
 
@@ -48,6 +53,14 @@ app.use("/api/posts", commentRouter);
 app.use("/api/posts", likeRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+import { verifyJWT } from '../src/middleware/verify.middleware.js';
+// Route to render EJS file
+app.get('/notifications',verifyJWT, (req, res) => {
+   const userId = req.user._id;
+  console.log(`User ${req.user._id}, `)
+  res.render('notifications',{userId}); // This will render views/notifications.ejs
+});
 
 app.use("/api", errorHandler);
 // default route for undefined routes

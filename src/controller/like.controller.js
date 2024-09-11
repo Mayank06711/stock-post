@@ -32,6 +32,7 @@ const likeStockPost = asyncHandler(async (req, res, next) => {
   // Increment the like count in the stock post
   stock.likesCount += 1;
   await stock.save();
+  console.log(stock.owner._id,"stock.likesCount")
   emitLikeUpdate(stock.owner._id, {
     postId: stock._id,
     likeCount: stock.likesCount,
@@ -52,7 +53,7 @@ const unlikeStockPost = asyncHandler(async (req, res, next) => {
     throw new ApiError(404, "You have not liked this post");
   }
 
-  await like.remove();
+  await Like.findByIdAndDelete(like._id);
 
   // Decrement the like count in the stock post
   const stock = await Stock.findById(req.params.postId);
