@@ -39,11 +39,16 @@ Once logged in, navigate to your Cloudinary dashboard.
 ### Access API Keys:
 
 In the dashboard, go to the "Settings" section.
-Under “Settings”, find the “API Keys” tab. Here, you will see your CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.
+
+Under “Settings”, find the “API Keys” tab. 
+
+Here, you will see your CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.
 
 ### Copy the Credentials:
 
-Copy the CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET from this section. These are the credentials you will use to configure your Cloudinary integration.
+Copy the CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET from this section.
+
+These are the credentials you will use to configure your Cloudinary integration.
 
 ## Starting Server
 
